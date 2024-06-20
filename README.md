@@ -1,1 +1,2 @@
-# cocos-ton-demo
+# hello-world
+Hello world new project template.
