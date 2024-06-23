@@ -1,13 +1,3 @@
-import TonConnect from '@tonconnect/sdk';
-import { toUserFriendlyAddress } from '@tonconnect/sdk';
-// import {
-//     isWalletInfoCurrentlyEmbedded,
-//     isWalletInfoInjectable,
-//     isWalletInfoCurrentlyInjected,
-//     isWalletInfoRemote,
-//     WalletInfo
-// } from '@tonconnect/sdk';
-import { isWalletInfoCurrentlyEmbedded, WalletInfoCurrentlyEmbedded } from '@tonconnect/sdk';
 
 
 const {ccclass, property} = cc._decorator;
