@@ -21,15 +21,16 @@ export default class Helloworld extends cc.Component {
     @property
     text: string = 'hello';
 
-    connector: TonConnect;
+    connector: any;
 
     // tonConnectUI: TonConnectUI;
 
     async start () {
+        let sdk = globalThis.TonConnectSDK
         // init logic
         this.label.string = "";
 
-        this.connector = new TonConnect({
+        this.connector = new sdk.TonConnect({
             manifestUrl:'https://archero.ttgames.xyz/manifest/archero.json'
         });
 
@@ -39,7 +40,7 @@ export default class Helloworld extends cc.Component {
             wallet => {
                 if(wallet) {
                     const rawAddress = wallet.account.address;
-                    const address = toUserFriendlyAddress(rawAddress);
+                    const address = sdk.toUserFriendlyAddress(rawAddress);
                     this.label.string = address;
                 } else {
                     this.label.string = '';
