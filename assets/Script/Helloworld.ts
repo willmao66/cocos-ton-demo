@@ -105,4 +105,8 @@ export default class Helloworld extends cc.Component {
         // }
         await this.tonConnectUI.disconnect();
     }
+
+    async onPay() {
+        console.log(111)
+    }
 }
