@@ -107,6 +107,26 @@ export default class Helloworld extends cc.Component {
     }
 
     async onPay() {
-        console.log(111)
+        const transaction = {
+            validUntil: Math.floor(Date.now() / 1000) + 60, // 60 sec
+            messages: [
+                {
+                    address: "UQCUbjXYCDTsEI5C2NOQc-yc6YhIatNfoOpKbuhToraGYVza",
+                    amount: "10000000",
+                },
+            ]
+        }
+        
+        try {
+            const result = await this.tonConnectUI.sendTransaction(transaction);
+            console.log(result)
+        } catch (e) {
+            const TON_CONNECT_UI = globalThis.TON_CONNECT_UI;
+            if(e instanceof TON_CONNECT_UI.UserRejectsError) {
+                console.log('user rejects')
+            } else {
+                console.log('unkown error')
+            }
+        }   
     }
 }
