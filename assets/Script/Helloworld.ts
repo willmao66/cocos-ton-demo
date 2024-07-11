@@ -13,49 +13,96 @@ export default class Helloworld extends cc.Component {
 
     connector: any;
 
-    // tonConnectUI: TonConnectUI;
+    tonConnectUI: any;
 
     async start () {
-        let sdk = globalThis.TonConnectSDK
+        
         // init logic
         this.label.string = "";
 
-        this.connector = new sdk.TonConnect({
+        // let sdk = globalThis.TonConnectSDK
+        // this.connector = new sdk.TonConnect({
+        //     manifestUrl:'https://archero.ttgames.xyz/manifest/archero.json'
+        // });
+
+        // this.connector.restoreConnection();
+       
+        // const unsubscribe = this.connector.onStatusChange(
+        //     wallet => {
+        //         if(wallet) {
+        //             const rawAddress = wallet.account.address;
+        //             const address = sdk.toUserFriendlyAddress(rawAddress);
+        //             this.label.string = address;
+        //         } else {
+        //             this.label.string = '';
+        //         }
+        //     } 
+        // );
+
+        const TON_CONNECT_UI = globalThis.TON_CONNECT_UI;
+        this.tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl:'https://archero.ttgames.xyz/manifest/archero.json'
         });
 
-        this.connector.restoreConnection();
        
-        const unsubscribe = this.connector.onStatusChange(
+        // console.log(this.tonConnectUI)
+        // console.log(this.tonConnectUI.connected())
+        
+        this.tonConnectUI.onStatusChange(
             wallet => {
                 if(wallet) {
                     const rawAddress = wallet.account.address;
-                    const address = sdk.toUserFriendlyAddress(rawAddress);
+                    const address = TON_CONNECT_UI.toUserFriendlyAddress(rawAddress);
                     this.label.string = address;
                 } else {
                     this.label.string = '';
                 }
             } 
-        );
+        )
+
+        // const unsubscribe = this.tonConnectUI.onStatusChange(
+        //     wallet => {
+        //         if(wallet) {
+        //             // const rawAddress = wallet.account.address;
+        //             // const address = sdk.toUserFriendlyAddress(rawAddress);
+        //             // this.label.string = address;
+        //             console.log(wallet)
+        //         } else {
+        //             this.label.string = '';
+        //         }
+        //     } 
+        // );
+
     }
 
     async onConnect() {
-        if(this.connector && !this.connector.connected) {
-            const walletConnectionSource = {
-                universalLink: "https://t.me/wallet?attach=wallet",
-                bridgeUrl: "https://bridge.ton.space/bridge"
-            }
+        // if(this.connector && !this.connector.connected) {
+        //     const walletConnectionSource = {
+        //         universalLink: "https://t.me/wallet?attach=wallet",
+        //         bridgeUrl: "https://bridge.ton.space/bridge"
+        //     }
             
-            const link = this.connector.connect(walletConnectionSource);
-            console.log(link);
+        //     const link = this.connector.connect(walletConnectionSource);
+        //     console.log(link);
 
-            cc.sys.openURL(link);
-        }
+        //     cc.sys.openURL(link);
+        // }
+        // 调用函数
+        this.connectToWallet().catch(error => {
+            console.error("Error connecting to wallet:", error);
+        });
+    }
+
+    async connectToWallet() {
+        await this.tonConnectUI.connectWallet();
+        // 如果需要，可以对connectedWallet做一些事情
+        // console.log(connectedWallet);
     }
 
     async onDisconnect() {
-        if(this.connector && this.connector.connected) {
-            this.connector.disconnect();
-        }
+        // if(this.connector && this.connector.connected) {
+        //     this.connector.disconnect();
+        // }
+        await this.tonConnectUI.disconnect();
     }
 }
