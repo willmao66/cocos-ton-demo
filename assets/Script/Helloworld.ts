@@ -49,16 +49,23 @@ export default class Helloworld extends cc.Component {
         // console.log(this.tonConnectUI.connected())
         
         this.tonConnectUI.onStatusChange(
-            wallet => {
+            async wallet => {
                 if(wallet) {
                     const rawAddress = wallet.account.address;
                     const address = TON_CONNECT_UI.toUserFriendlyAddress(rawAddress);
                     this.label.string = address;
+                    console.log(address)
+                    // const TonWeb = globalThis.TonWeb;
+                    // const tonweb = new TonWeb();
+                    // const txs = await tonweb.provider.getTransactions(address, 5);
+                    // console.log(txs[0].out_msgs[0])
                 } else {
                     this.label.string = '';
                 }
             } 
         )
+
+        console.log(this.tonConnectUI.address)
 
         // const unsubscribe = this.tonConnectUI.onStatusChange(
         //     wallet => {
