@@ -117,13 +117,13 @@ export default class Helloworld extends cc.Component {
         const TonWeb = globalThis.TonWeb;
         let a = new TonWeb.boc.Cell();
         a.bits.writeUint(0, 32);
-        a.bits.writeString("hello");
+        a.bits.writeString("我二次测试");
         const payload = TonWeb.utils.bytesToBase64(await a.toBoc());
         const transaction = {
             validUntil: Math.floor(Date.now() / 1000) + 60, // 60 sec
             messages: [
                 {
-                    address: "EQCuVWVQgZHm4kS6oTLx2ywYYT4Sfs5rpfLU1-DywiWXZ0De",
+                    address: "EQBSGItvZTMqgYwPAx1XxJmqiLrPUVKvq2vy2Hk-lYxJB8kK",
                     amount: "10000000",
                     payload: payload
                 },
