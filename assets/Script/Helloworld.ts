@@ -107,12 +107,18 @@ export default class Helloworld extends cc.Component {
     }
 
     async onPay() {
+        const TonWeb = globalThis.TonWeb;
+        let a = new TonWeb.boc.Cell();
+        a.bits.writeUint(0, 32);
+        a.bits.writeString("hello");
+        const payload = TonWeb.utils.bytesToBase64(await a.toBoc());
         const transaction = {
             validUntil: Math.floor(Date.now() / 1000) + 60, // 60 sec
             messages: [
                 {
-                    address: "UQCUbjXYCDTsEI5C2NOQc-yc6YhIatNfoOpKbuhToraGYVza",
+                    address: "EQCuVWVQgZHm4kS6oTLx2ywYYT4Sfs5rpfLU1-DywiWXZ0De",
                     amount: "10000000",
+                    payload: payload
                 },
             ]
         }
