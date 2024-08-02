@@ -67,9 +67,15 @@ export default class Helloworld extends cc.Component {
                     const jettonWallet = new TonWeb.token.jetton.JettonWallet(tonweb.provider, {
                         address: jettonWalletAddress
                     });
-                    const jettonData = await jettonWallet.getData();
-                    console.log(jettonData.balance.toString());
+                   
+                    try {
+                        const jettonData = await jettonWallet.getData();
+                        console.log(jettonData.balance.toString());
 
+                    } catch(e) {
+                        console.log('0')
+                    }
+    
                     // const txs = await tonweb.provider.getTransactions(address, 5);
                     // console.log(txs[0].out_msgs[0])
                 } else {
