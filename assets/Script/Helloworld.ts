@@ -133,7 +133,7 @@ export default class Helloworld extends cc.Component {
     }
 
     async onPay() {
-        return this.onTest();
+        return this.onTest2();
     
         const TonWeb = globalThis.TonWeb;
 
@@ -217,5 +217,29 @@ export default class Helloworld extends cc.Component {
                 console.log('unkown error')
             }
         }   
+    }
+
+    async onTest2() {
+        const TonWeb = globalThis.TonWeb;
+        const Cell = TonWeb.boc.Cell;
+        const tonweb = new TonWeb();
+
+        const gameAddress = "EQD1MT70ZUd3P26N_QNpV9WCAQNUOaLO-N0mzZy9QQQM2au5";
+
+        // parese cell -> slice -> address 
+        const result = await tonweb.call(gameAddress, "get_core_address", []);
+        const stack = result.stack;
+        const bytes = stack[0][1].bytes;  // Access the bytes
+        const cell = Cell.fromBoc(TonWeb.utils.base64ToBytes(bytes))[0]; 
+        const slice = cell.beginParse()
+        const address = slice.loadAddress();
+        console.log(address.toString(true, true, true));
+
+        // parse numHex -> uint
+        // const result = await tonweb.call(gameAddress, "get_rate", []);
+        // const stack = result.stack;
+        // const numHex = stack[0][1];  // Access the hexadecimal string, e.g., '0x50'
+        // const num = parseInt(numHex, 16);  // Convert from hex to a decimal number
+        // console.log("Parsed uint:", num);  // Display the parsed number
     }
 }
