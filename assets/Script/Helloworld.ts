@@ -55,8 +55,21 @@ export default class Helloworld extends cc.Component {
                     const address = TON_CONNECT_UI.toUserFriendlyAddress(rawAddress);
                     this.label.string = address;
                     console.log(address)
-                    // const TonWeb = globalThis.TonWeb;
-                    // const tonweb = new TonWeb();
+
+                    // 通过jetton minter地址 获取 jetton数量
+                    const TonWeb = globalThis.TonWeb;
+                    const tonweb = new TonWeb();
+                    const jettonMinter = new TonWeb.token.jetton.JettonMinter(tonweb.provider, {
+                        address: "EQAzT8yexq918h0JocavIPJ5K2ZO9N4qObFRqDNzAEfEnkhn"
+                    });
+                    const jettonWalletAddress = await jettonMinter.getJettonWalletAddress(new TonWeb.utils.Address(address));
+                    console.log(jettonWalletAddress.toString(true, true, true));
+                    const jettonWallet = new TonWeb.token.jetton.JettonWallet(tonweb.provider, {
+                        address: jettonWalletAddress
+                    });
+                    const jettonData = await jettonWallet.getData();
+                    console.log(jettonData.balance.toString());
+
                     // const txs = await tonweb.provider.getTransactions(address, 5);
                     // console.log(txs[0].out_msgs[0])
                 } else {
@@ -65,7 +78,7 @@ export default class Helloworld extends cc.Component {
             } 
         )
 
-        console.log(this.tonConnectUI.address)
+        // console.log(this.tonConnectUI.address)
 
         // const unsubscribe = this.tonConnectUI.onStatusChange(
         //     wallet => {
@@ -115,16 +128,21 @@ export default class Helloworld extends cc.Component {
 
     async onPay() {
         const TonWeb = globalThis.TonWeb;
+
+        const amount = TonWeb.utils.toNano("0.1").toString();
+        const jettonAmount = new TonWeb.utils.BN(100);
+       
         let a = new TonWeb.boc.Cell();
-        a.bits.writeUint(0, 32);
-        a.bits.writeString("我二次测试");
+        a.bits.writeUint(21, 32);
+        a.bits.writeCoins(jettonAmount);
+        a.bits.writeString("mint");
         const payload = TonWeb.utils.bytesToBase64(await a.toBoc());
         const transaction = {
             validUntil: Math.floor(Date.now() / 1000) + 60, // 60 sec
             messages: [
                 {
-                    address: "EQBSGItvZTMqgYwPAx1XxJmqiLrPUVKvq2vy2Hk-lYxJB8kK",
-                    amount: "10000000",
+                    address: "EQD1MT70ZUd3P26N_QNpV9WCAQNUOaLO-N0mzZy9QQQM2au5",
+                    amount: amount,
                     payload: payload
                 },
             ]
