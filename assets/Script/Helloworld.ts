@@ -133,6 +133,8 @@ export default class Helloworld extends cc.Component {
     }
 
     async onPay() {
+        return this.onTest();
+    
         const TonWeb = globalThis.TonWeb;
 
         const amount = TonWeb.utils.toNano("0.1").toString();
@@ -154,6 +156,56 @@ export default class Helloworld extends cc.Component {
             ]
         }
         
+        try {
+            const result = await this.tonConnectUI.sendTransaction(transaction);
+            console.log(result)
+        } catch (e) {
+            const TON_CONNECT_UI = globalThis.TON_CONNECT_UI;
+            if(e instanceof TON_CONNECT_UI.UserRejectsError) {
+                console.log('user rejects')
+            } else {
+                console.log('unkown error')
+            }
+        }   
+    }
+
+    async onTest() {
+        const TonWeb = globalThis.TonWeb;
+        const amount = TonWeb.utils.toNano("0.03").toString();
+        const forwardAmount = TonWeb.utils.toNano("0.015");
+        const jettonAmount = new TonWeb.utils.BN(25);
+
+        const address = this.label.string;
+        const tonweb = new TonWeb();
+        const jettonMinter = new TonWeb.token.jetton.JettonMinter(tonweb.provider, {
+            address: "EQAzT8yexq918h0JocavIPJ5K2ZO9N4qObFRqDNzAEfEnkhn"
+        });
+        const jettonWalletAddress = await jettonMinter.getJettonWalletAddress(new TonWeb.utils.Address(address));
+        const to = jettonWalletAddress.toString(true, true, true);
+        const coreAddress = new TonWeb.utils.Address("EQBQZw26fP-ZpWKU3U2An7R_hDJYmnsrUqZUWZ9AAPidZXVf");
+        const myAddress = new TonWeb.utils.Address(address);
+        
+        let cell = new TonWeb.boc.Cell();
+        cell.bits.writeUint(0xf8a7ea5, 32); // request_transfer op
+        cell.bits.writeUint(0, 64);
+        cell.bits.writeCoins(jettonAmount);
+        cell.bits.writeAddress(coreAddress);
+        cell.bits.writeAddress(myAddress);
+        cell.bits.writeUint(0, 1);
+        cell.bits.writeCoins(forwardAmount);
+        cell.bits.writeUint(0, 1);
+        const payload = TonWeb.utils.bytesToBase64(await cell.toBoc());
+        const transaction = {
+            validUntil: Math.floor(Date.now() / 1000) + 60, // 60 sec
+            messages: [
+                {
+                    address: to, //"EQAM4PCqWx3hgurBri2K0B5UrV9H5qKu8ZNA9HVtjDaqZZqV",
+                    amount: amount,
+                    payload: payload
+                },
+            ]
+        }
+
         try {
             const result = await this.tonConnectUI.sendTransaction(transaction);
             console.log(result)
